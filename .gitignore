@@ -1,0 +1,5 @@
+*.o
+re*
+philo/philo
+philo_bonus/philo_bonus
+.vscode
