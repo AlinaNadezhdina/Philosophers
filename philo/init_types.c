@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/14 12:47:26 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/14 12:47:41 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/14 16:13:04 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int init_types(t_sets *set)
 	set->philos = malloc(sizeof(t_philo) * set->ph_count);
 	if (!set->philos)
 	{
-		printf("Pthreads creating error!\n");
+		printf("Philo array creating error!\n");
 		free(set->threads);
 		free(set->forks);
 		return (1);

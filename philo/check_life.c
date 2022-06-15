@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:44:40 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/14 12:45:52 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/15 13:54:36 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,13 @@ int	check_die(t_philo *philo)
 	return (0);
 }
 
+void	set_death_flag(t_sets *set)
+{
+	pthread_mutex_lock(&(set->flag_deth_mutex));
+	set->flag_deth = 1;
+	pthread_mutex_unlock(&(set->flag_deth_mutex));
+}
+
 void	*check_live(void *param)
 {
 	t_sets *set = param;
@@ -66,9 +73,7 @@ void	*check_live(void *param)
 		{
 			if (check_die(&(set->philos[i])))
 			{
-				pthread_mutex_lock(&(set->flag_deth_mutex));
-				set->flag_deth = 1;
-				pthread_mutex_unlock(&(set->flag_deth_mutex));
+				set_death_flag(set);
 				print_die(&(set->philos[i]));
 				return (NULL);
 			}
@@ -76,6 +81,7 @@ void	*check_live(void *param)
 		}
 		if (check_all_ph_ate(set))
 		{
+			set_death_flag(set);
 			return (NULL);
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 17:45:13 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/14 13:21:36 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/15 13:40:55 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ void *philo_life(void *ph)
 			pthread_mutex_lock(&(philo->philo_access_mutex));
 			philo->ph_ate_flag = 1;
 			pthread_mutex_unlock(&(philo->philo_access_mutex));
-			return (NULL);
 		}
 		if (are_you_already_dead(philo->sets))
 			return (NULL);
