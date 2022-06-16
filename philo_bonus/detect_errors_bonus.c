@@ -1,24 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_types_bonus.c                                 :+:      :+:    :+:   */
+/*   detect_errors_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/08 12:17:36 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/15 18:55:15 by wcollen          ###   ########.fr       */
+/*   Created: 2022/05/18 12:25:58 by wcollen           #+#    #+#             */
+/*   Updated: 2022/06/15 18:50:16 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-int init_philos(t_philo **philos, t_sets *set)
+int	 is_negative_args(int count, char **arg)
 {
-	*philos = malloc(sizeof(t_philo) * set->ph_count);
-	if (!philos)
+	int	i;
+
+	i = 0;
+	while(i < count)
 	{
-		return (1);
+		if (ft_atoi(arg[i]) <= 0)
+			return (1);
+		i++;
 	}
 	return (0);
 }
 
+int	error_msg(char *str)
+{
+	int	i = 0;
+	while(str[i])
+	{
+		write(2, &str[i], 1);
+		i++;
+	}
+	write(2, "\n", 1);
+	return (1);
+}

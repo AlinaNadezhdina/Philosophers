@@ -2,14 +2,19 @@ NAME			=	philo_bonus
 
 SRCS			=	philo_bonus.c\
 					ft_atoi_bonus.c\
+					detect_errors_bonus.c\
 					parse_args_bonus.c\
-					init_types_bonus.c
+					init_types_bonus.c\
+					check_life_bonus.c\
+					fill_set_bonus.c\
+					free_and_destroy_bonus.c\
+					utils_bonus.c
 
 SRCS_DIR		=	philo_bonus
 
 SOURCES			=	$(addprefix $(SRCS_DIR)/, $(SRCS))
 
-HEADER			=	$(SRCS_DIR)/philo.h
+HEADER			=	$(SRCS_DIR)/philo_bonus.h
 
 # OBJ_PATH		=	obj
 

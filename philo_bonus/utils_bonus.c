@@ -6,11 +6,11 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:23:30 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/08 14:31:49 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/15 17:12:39 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 long	get_time_now()
 {
@@ -29,34 +29,34 @@ void	smart_sleep(unsigned long time_to_sleep)
 		usleep(1);
 }
 
-// void	print(t_philo *philo, char *str)
-// {
-// 	unsigned long	time;
+void	print(t_philo *philo, char *str)
+{
+	unsigned long	time;
 
-// 	if (are_you_already_dead(philo->sets))
-// 		return ;
-// 	time = get_time_now();
-// 	pthread_mutex_lock(philo->write);
-// 	printf("%ld %d %s\n", time - philo->sets->start_time, philo->num, str);
-// 	pthread_mutex_unlock(philo->write);
-// }
+	if (are_you_already_dead(philo->set))
+		return ;
+	time = get_time_now();
+	sem_wait(philo->set->print_sem);
+	printf("%ld %d %s\n", time - philo->set->start_time, philo->num, str);
+	sem_post(philo->set->print_sem);
+}
 
-// void	print_die(t_philo *philo)
-// {
-// 	unsigned long	time;
+void	print_die(t_philo *philo)
+{
+	unsigned long	time;
 
-// 	time = get_time_now();
-// 	pthread_mutex_lock(philo->write);
-// 	printf("\033[31m%ld %d died \033[37m",  time - philo->sets->start_time, philo->num);
-// 	pthread_mutex_unlock(philo->write);
-// }
+	time = get_time_now();
+	sem_wait(philo->set->print_sem);
+	printf("\033[31m%ld %d died \033[37m",  time - philo->set->start_time, philo->num);
+	sem_post(philo->set->print_sem);
+}
 
-// int	are_you_already_dead(t_sets *set)
-// {
-// 	int death;
+int	are_you_already_dead(t_sets *set)
+{
+	int death;
 
-// 	pthread_mutex_lock(&(set->flag_deth_mutex));
-// 	death = set->flag_deth;
-// 	pthread_mutex_unlock(&(set->flag_deth_mutex));
-// 	return (death);
-//}
+	sem_wait(set->death_flag_sem);
+	death = set->flag_deth;
+	sem_post(set->death_flag_sem);
+	return (death);
+}

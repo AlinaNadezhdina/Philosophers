@@ -1,24 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_types_bonus.c                                 :+:      :+:    :+:   */
+/*   fill_set_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/08 12:17:36 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/15 18:55:15 by wcollen          ###   ########.fr       */
+/*   Created: 2022/06/14 15:42:05 by wcollen           #+#    #+#             */
+/*   Updated: 2022/06/16 12:50:57 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-int init_philos(t_philo **philos, t_sets *set)
+void	fill_set(t_sets *set)
 {
-	*philos = malloc(sizeof(t_philo) * set->ph_count);
-	if (!philos)
-	{
-		return (1);
-	}
-	return (0);
-}
+	sem_unlink("/forks");
+	sem_unlink("/print");
+	sem_unlink("/death");
+	sem_unlink("/flag_death");
 
+	set->forks_sem = sem_open("/forks", O_CREAT, 0644, set->ph_count);
+	set->print_sem = sem_open("/print", O_CREAT, 0644, 1);
+	set->death_sem = sem_open("/death", O_CREAT, 0644, 0);
+	set->death_flag_sem = sem_open("/flag_death", O_CREAT, 0644, 1);
+	set->flag_deth = 0;
+	set->start_time = get_time_now();	 
+}
