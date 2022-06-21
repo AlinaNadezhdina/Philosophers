@@ -3,10 +3,8 @@ NAME			=	philo_bonus
 SRCS			=	philo_bonus.c\
 					ft_atoi_bonus.c\
 					detect_errors_bonus.c\
-					parse_args_bonus.c\
-					init_types_bonus.c\
-					check_life_bonus.c\
-					fill_set_bonus.c\
+					init_bonus.c\
+					food_life_monitor_bonus.c\
 					free_and_destroy_bonus.c\
 					utils_bonus.c
 

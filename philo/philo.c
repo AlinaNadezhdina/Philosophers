@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 17:45:13 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/15 13:40:55 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/21 17:30:31 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ void	create_philo_threads(t_sets set)
 int main(int argc, char **argv)
 {
 	t_sets	set;
+	
 	if (check_args(argc, argv, &set))
 		return (1);
 	if (init_types(&set))

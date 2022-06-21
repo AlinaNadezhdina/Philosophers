@@ -6,22 +6,25 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/15 18:23:06 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/16 12:38:38 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/21 22:49:17 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	make_free_and_destroy(t_philo *philos, t_sets *set)
+int	make_free_and_destroy(t_sets *set)
 {
-	int	i;
+	int		i;
+	t_philo *philos;
 
 	i = 0;
-	sem_wait(set->death_sem);
+	philos = set->philos;
+	//sem_wait(set->death_sem);
+	printf("sem_wait(set->death_sem)  make_free_and_destroy\n");
 	while (i < set->ph_count)
 	{	
 		sem_close(philos[i].ph_access_sem);
-		kill(philos[i].pid, SIGTERM);
+		sem_close(philos[i].eat_cnt_sem);
 		i++;
 	}
 	free(philos);
@@ -29,4 +32,16 @@ void	make_free_and_destroy(t_philo *philos, t_sets *set)
 	sem_close(set->death_flag_sem);
 	sem_close(set->death_sem);
 	sem_close(set->print_sem);
+	return (0);
+}
+
+void	kill_processes(t_sets *set)
+{
+	int	i;
+
+	i = -1;
+	while (i < set->ph_count)
+	{	
+		kill(set->philos[++i].pid, SIGTERM);
+	}
 }
