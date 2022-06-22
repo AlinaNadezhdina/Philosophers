@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:06:38 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/22 13:29:47 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/22 14:19:44 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@ int	start_philo_life_process(t_philo *philo)
 	if (pthread_create(&(philo->set->th_live_cntrl), NULL, death_monitor, philo) != 0)
 		return (1);
 	philo_life(philo);
-	pthread_join(philo->set->th_live_cntrl, NULL);
+	//pthread_join(philo->set->th_live_cntrl, NULL);
+	pthread_detach(philo->set->th_live_cntrl);
 	return (0);
 }
 
@@ -98,6 +99,8 @@ int	create_processes(t_sets *set)
 		//usleep(100);
 	}
 	int status;
+
+	//В случае успешного выполнения wait() возвращает ID процесса завершившегося потомка
 	while (waitpid(-1, &status, 0) > 0)
 	{
 		if (WEXITSTATUS(status) == 1)
@@ -115,7 +118,7 @@ int	main(int argc, char **argv)
 	if (init(argv, &set) || create_processes(&set) || start_meal_count_thread(&set))
 		return (error_msg("error: fatal!\n") && make_free_and_destroy(&set));
 	
-	sem_wait(set.death_sem);
+	sem_wait(set.death_sem);// sem_post в потоке еды и в потоке смерти
 	
 	//kill_processes(&set);
 	make_free_and_destroy(&set);
