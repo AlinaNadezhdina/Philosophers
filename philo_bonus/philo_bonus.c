@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:06:38 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/21 23:49:08 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/22 13:29:47 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	philo_life(t_philo *philo)
 int	start_philo_life_process(t_philo *philo)
 {
 	philo->last_eating = get_time_now();
-	if (pthread_create(&(philo->set->th_live_cntrl), NULL, death_monitor, philo->set) != 0)
+	if (pthread_create(&(philo->set->th_live_cntrl), NULL, death_monitor, philo) != 0)
 		return (1);
 	philo_life(philo);
 	pthread_join(philo->set->th_live_cntrl, NULL);
@@ -92,10 +92,16 @@ int	create_processes(t_sets *set)
 			return (error_msg("fork creation error"));
 		if (philos[i].pid == 0)
 		{
-			start_philo_life_process(&philos[i]);
+			start_philo_life_process(&philos[i]);			
 			exit(0);
 		}
-		usleep(100);
+		//usleep(100);
+	}
+	int status;
+	while (waitpid(-1, &status, 0) > 0)
+	{
+		if (WEXITSTATUS(status) == 1)
+			return (kill_processes(set));
 	}
 	return (0);
 }
@@ -111,7 +117,7 @@ int	main(int argc, char **argv)
 	
 	sem_wait(set.death_sem);
 	
-	kill_processes(&set);
+	//kill_processes(&set);
 	make_free_and_destroy(&set);
 	return (0);
 }

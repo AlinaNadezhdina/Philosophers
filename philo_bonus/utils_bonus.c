@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:23:30 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/15 17:12:39 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/22 13:22:20 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	print_die(t_philo *philo)
 
 	time = get_time_now();
 	sem_wait(philo->set->print_sem);
-	printf("\033[31m%ld %d died \033[37m",  time - philo->set->start_time, philo->num);
+	printf("\033[31m%ld %d died \033[37m\n",  time - philo->set->start_time, philo->num);
 	sem_post(philo->set->print_sem);
 }
 
