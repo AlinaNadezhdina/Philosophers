@@ -47,6 +47,7 @@ typedef struct s_sets
 	long 		cnt_eatings;
 	pthread_t	th_live_cntrl;
 	sem_t		*forks_sem;
+	sem_t		**queue_sems;
 	// sem_t		*print_sem;
 	sem_t		*death_or_ate_sem;
 	// sem_t		*death_flag_sem;

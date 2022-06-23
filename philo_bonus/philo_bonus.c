@@ -15,8 +15,15 @@
 void	philo_eat(t_philo * philo)
 {
 	t_sets *set;
+	int current_index;
+	int passed_index;
 
 	set = philo->set;
+
+	current_index = philo->num-1;
+	printf("- %d entered the queue\n", philo->num);
+	sem_wait(set->queue_sems[current_index]); // queue lock
+
 	sem_wait(set->forks_sem);
 	print(philo, "has taken a fork");
 	if (set->ph_count == 1)
@@ -27,8 +34,9 @@ void	philo_eat(t_philo * philo)
 	sem_wait(set->forks_sem);
 	print(philo, "has taken a fork");
 
+	long time = get_time_now();
 	sem_wait(philo->ph_access_sem);
-	philo->last_eating = get_time_now();
+	philo->last_eating = time;
 	sem_post(philo->ph_access_sem);
 
 	print(philo, "is eating");
@@ -40,6 +48,10 @@ void	philo_eat(t_philo * philo)
 	
 	sem_post(set->forks_sem);
 	sem_post(set->forks_sem);
+
+	passed_index = (current_index + 1) % set->ph_count;
+	sem_post(set->queue_sems[passed_index]); // pass queue to the next philosopher
+	printf("- %d passed the queue to %d\n", philo->num, passed_index + 1);
 }
 
 void	philo_life(t_philo *philo)
@@ -51,6 +63,7 @@ void	philo_life(t_philo *philo)
 	set = philo->set;
 	while (1)
 	{
+		print(philo, "before checking if dead");
 		if(are_you_already_dead(set))
 			return ;
 		philo_eat(philo);

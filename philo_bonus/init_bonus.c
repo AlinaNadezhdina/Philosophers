@@ -24,6 +24,38 @@ sem_t	*open_semaphore(char *name, int val)
 int	init_semaphores(t_sets *set)
 {
 	set->forks_sem = open_semaphore("/forks", set->ph_count);
+	
+	char sem_names[20][40] = {
+		"queue1",
+		"queue2",
+		"queue3",
+		"queue4",
+		"queue5",
+		"queue6",
+		"queue7",
+		"queue8",
+		"queue9",
+		"queue10",
+		"queue11",
+		"queue12",
+		"queue13",
+		"queue14",
+		"queue15",
+		"queue16",
+		"queue17",
+		"queue18",
+		"queue19",
+		"queue20",
+	};
+	set->queue_sems = malloc(sizeof(sem_t));
+	for (int i = 0; i < set->ph_count; i++)
+	{
+		sem_unlink(sem_names[i]); // also close when ending the program
+		sem_t *queue_sem = sem_open(sem_names[i], O_CREAT, 0644, i % 2);
+		printf("%d\n", i%2);
+		set->queue_sems[i] = queue_sem;
+	}
+	
 	// set->print_sem = open_semaphore("print", 1);
 	set->death_or_ate_sem = open_semaphore("/death",  0);// семафор выставляется в 1 если кто-то умер
 	// set->death_flag_sem = open_semaphore("flag_death", 1);//семафор для флага смерти между 2 потоками процесса филлософа
@@ -40,13 +72,14 @@ int	init_philos(t_sets *set)
 	i = 0;
 	while (i < set->ph_count)
 	{
-		set->philos[i].ph_access_sem = open_semaphore("/ph_access_sem", 1);
+		set->philos[i].num = i + 1;
+
+		set->philos[i].ph_access_sem = open_semaphore("ph_access_sem", 1);
 		if (set->philos[i].ph_access_sem < 0)
 			return (1);
 		set->philos[i].eat_cnt_sem = open_semaphore("/eat_cnt_sem", 0);
 		if (set->philos[i].eat_cnt_sem < 0)
 			return (1);
-		set->philos[i].num = i + 1;
 		set->philos[i].ph_cnt_eating = 0;
 		set->philos[i].set = set;
 		set->philos[i].last_eating = get_time_now();

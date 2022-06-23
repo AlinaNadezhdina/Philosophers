@@ -22,11 +22,13 @@ long	get_time_now()
 
 void	smart_sleep(unsigned long time_to_sleep)
 {
-	unsigned long start;
+	usleep(time_to_sleep * 1000);
+
+	// unsigned long start;
 	
-	start = get_time_now();
-	while(get_time_now() - start <= time_to_sleep)
-		usleep(1);
+	// start = get_time_now();
+	// while(get_time_now() - start <= time_to_sleep)
+	// 	usleep(1);
 }
 
 void	print(t_philo *philo, char *str)
@@ -37,7 +39,7 @@ void	print(t_philo *philo, char *str)
 		return ;
 	time = get_time_now();
 	// sem_wait(philo->set->print_sem);
-	printf("%ld %d %s\n", time - philo->set->start_time, philo->num, str);
+	printf("|%ld|\t\t %d %s\n", time - philo->set->start_time, philo->num, str);
 	// sem_post(philo->set->print_sem);
 }
 

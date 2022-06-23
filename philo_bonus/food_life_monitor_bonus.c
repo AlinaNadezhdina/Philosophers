@@ -39,6 +39,7 @@ int	check_die(t_philo *philo)
 	time = get_time_now();
 
 	sem_wait(philo->ph_access_sem);
+	usleep(1000);
 	last_eat_time = philo->last_eating;
 	sem_post(philo->ph_access_sem);
 
@@ -73,7 +74,6 @@ void	*death_monitor(void *param)
 			sem_post(set->death_or_ate_sem);
 			return (NULL);
 		}
-		usleep(1000);
 	}
 	return (NULL);
 }
