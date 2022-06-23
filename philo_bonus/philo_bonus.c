@@ -26,14 +26,14 @@ void	philo_eat(t_philo * philo)
 	}
 	sem_wait(set->forks_sem);
 	print(philo, "has taken a fork");
-	sem_wait(philo->ph_access_sem);
+	// sem_wait(philo->ph_access_sem);
 	philo->last_eating = get_time_now();
-	sem_post(philo->ph_access_sem);
+	// sem_post(philo->ph_access_sem);
 	print(philo, "is eating");
 	smart_sleep(set->time_to_eat);
-	sem_wait(philo->ph_access_sem);
+	// sem_wait(philo->ph_access_sem);
 	philo->ph_cnt_eating++;
-	sem_post(philo->ph_access_sem);
+	// sem_post(philo->ph_access_sem);
 	sem_post(set->forks_sem);
 	sem_post(set->forks_sem);
 }
@@ -51,12 +51,12 @@ void	philo_life(t_philo *philo)
 			return ;
 		philo_eat(philo);
 		total_eating = philo->set->cnt_eatings;
-		sem_wait(philo->ph_access_sem);
+		// sem_wait(philo->ph_access_sem);
 		ph_cnt_eating = philo->ph_cnt_eating;
-		sem_post(philo->ph_access_sem);	
+		// sem_post(philo->ph_access_sem);	
 		if (total_eating != -1 && ph_cnt_eating >= total_eating)
 		{			
-			sem_post(philo->eat_cnt_sem);
+			// sem_post(philo->eat_cnt_sem);
 			return ;
 		}
 		if (are_you_already_dead(philo->set))
@@ -118,7 +118,7 @@ int	main(int argc, char **argv)
 	if (init(argv, &set) || create_processes(&set) || start_meal_count_thread(&set))
 		return (error_msg("error: fatal!\n") && make_free_and_destroy(&set));
 	
-	sem_wait(set.death_sem);// sem_post в потоке еды и в потоке смерти
+	// sem_wait(set.death_sem);// sem_post в потоке еды и в потоке смерти
 	
 	//kill_processes(&set);
 	make_free_and_destroy(&set);

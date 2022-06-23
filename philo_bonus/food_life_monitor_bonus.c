@@ -21,10 +21,10 @@ void	*food_monitor(void *ph_param)
 	i = 0;
 	while (i < set->ph_count)
 	{
-		sem_wait(set->philos[i].eat_cnt_sem);
+		// sem_wait(set->philos[i].eat_cnt_sem);
 		i++;
 	}
-	sem_post(set->death_sem);
+	// sem_post(set->death_sem);
 	return (NULL);
 }
 
@@ -34,9 +34,9 @@ int	check_die(t_philo *philo)
 	long	time;
 
 	time = get_time_now();
-	sem_wait(philo->ph_access_sem);
+	// sem_wait(philo->ph_access_sem);
 	last_eat_time = philo->last_eating;
-	sem_post(philo->ph_access_sem);
+	// sem_post(philo->ph_access_sem);
 	if (time - last_eat_time > philo->set->time_to_die)
 		return (1);
 	return (0);
@@ -51,18 +51,21 @@ void	*death_monitor(void *param)
 	philo = param;
 	set = philo->set;
 	time = get_time_now();
+
+	sem_t *flag_sem = sem_open("flag_death", O_EXCL);
+
 	while (1)
 	{
 		if (check_die(philo))
 		{
 			printf("HERE!!!\n");
-			print_die(philo);
+			print_die(philo, flag_sem);
 
-			sem_wait(set->death_flag_sem);
+			sem_wait(flag_sem);
 			set->flag_deth = 1;
-			sem_post(set->death_flag_sem);
+			sem_post(flag_sem);
 			
-			sem_post(set->death_sem);
+			// sem_post(set->death_sem);
 			return (NULL);
 		}
 	}
