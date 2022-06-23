@@ -41,14 +41,14 @@ void	print(t_philo *philo, char *str)
 	// sem_post(philo->set->print_sem);
 }
 
-void	print_die(t_philo *philo, sem_t *sem)
+void	print_die(t_philo *philo)
 {
 	unsigned long	time;
 
 	time = get_time_now();
-	sem_wait(sem);
+	// sem_wait(philo->set->print_sem);
 	printf("\033[31m%ld %d died \033[37m\n",  time - philo->set->start_time, philo->num);
-	sem_post(sem);
+	// sem_post(philo->set->print_sem);
 }
 
 int	are_you_already_dead(t_sets *set)
@@ -56,7 +56,7 @@ int	are_you_already_dead(t_sets *set)
 	int death;
 
 	// sem_wait(set->death_flag_sem);
-	death = set->flag_deth;
+	death = set->flag_death;
 	// sem_post(set->death_flag_sem);
 	return (death);
 }

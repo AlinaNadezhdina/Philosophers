@@ -12,19 +12,21 @@
 
 #include "philo_bonus.h"
 
-void	*food_monitor(void *ph_param)
+void	*food_monitor(void *set_arg)
 {
 	t_sets	*set;
 	int		i;
 	
-	set = ph_param;
+	set = set_arg;
 	i = 0;
+
 	while (i < set->ph_count)
 	{
-		// sem_wait(set->philos[i].eat_cnt_sem);
+		sem_wait(set->philos[i].eat_cnt_sem);
 		i++;
 	}
-	// sem_post(set->death_sem);
+	sem_post(set->death_or_ate_sem);
+	printf("ALL ATE\n");
 	return (NULL);
 }
 
@@ -52,20 +54,20 @@ void	*death_monitor(void *param)
 	set = philo->set;
 	time = get_time_now();
 
-	sem_t *flag_sem = sem_open("flag_death", O_EXCL);
+	// sem_t *flag_sem = sem_open("flag_death", 0);
 
 	while (1)
 	{
 		if (check_die(philo))
 		{
 			printf("HERE!!!\n");
-			print_die(philo, flag_sem);
+			print_die(philo);
 
-			sem_wait(flag_sem);
-			set->flag_deth = 1;
-			sem_post(flag_sem);
+			// sem_wait(flag_sem);
+			set->flag_death = 1;
+			// sem_post(flag_sem);
 			
-			// sem_post(set->death_sem);
+			sem_post(set->death_or_ate_sem);
 			return (NULL);
 		}
 	}
@@ -78,9 +80,11 @@ int	start_meal_count_thread(t_sets *set)
 
 	if (set->cnt_eatings != -1)
 	{
-		if (pthread_create(&meal_thread, NULL, food_monitor, &set) != 0)
+		int food_count_result = pthread_create(&meal_thread, NULL, food_monitor, set);
+		printf("FOOD COUNT THREAD RESULT %d\n", food_count_result);
+		if (food_count_result != 0)
 			return (1);
-		pthread_join(meal_thread, NULL);
+		// pthread_detach(meal_thread);
 	}
 	return (0);
 }

@@ -25,7 +25,7 @@ int	init_semaphores(t_sets *set)
 {
 	set->forks_sem = open_semaphore("forks", set->ph_count);
 	// set->print_sem = open_semaphore("print", 1);
-	// set->death_sem = open_semaphore("death",  0);// семафор выставляется в 1 если кто-то умер
+	set->death_or_ate_sem = open_semaphore("death",  0);// семафор выставляется в 1 если кто-то умер
 	// set->death_flag_sem = open_semaphore("flag_death", 1);//семафор для флага смерти между 2 потоками процесса филлософа
 	// if (set->forks_sem < 0 || set->print_sem < 0 
 			// || set->death_sem < 0 || set->death_flag_sem < 0)
@@ -43,9 +43,9 @@ int	init_philos(t_sets *set)
 		// set->philos[i].ph_access_sem = open_semaphore("ph_access_sem", 1);
 		// if (set->philos[i].ph_access_sem < 0)
 			// return (1);
-		// set->philos[i].eat_cnt_sem = open_semaphore("eat_cnt_sem", 0);
-		// if (set->philos[i].eat_cnt_sem < 0)
-			// return (1);
+		set->philos[i].eat_cnt_sem = open_semaphore("eat_cnt_sem", 0);
+		if (set->philos[i].eat_cnt_sem < 0)
+			return (1);
 		set->philos[i].num = i + 1;
 		set->philos[i].ph_cnt_eating = 0;
 		set->philos[i].set = set;
@@ -57,7 +57,7 @@ int	init_philos(t_sets *set)
 
 int init(char **argv, t_sets *set)
 {	
-	set->flag_deth = 0;
+	set->flag_death = 0;
 	set->start_time = get_time_now();
 	set->ph_count = ft_atoi(argv[1]);
 	set->time_to_die = ft_atoi(argv[2]);

@@ -32,12 +32,13 @@ typedef struct s_philo
 	long			last_eating;
 	long			ph_cnt_eating;
 	// sem_t			*ph_access_sem;
-	// sem_t			*eat_cnt_sem;
+	sem_t			*eat_cnt_sem;
 }t_philo;
 
 typedef struct s_sets
 {
-	int			flag_deth;
+	int			flag_death;
+	int			flag_all_ate;
 	int			ph_count;
 	long		start_time;
 	long		time_to_die;
@@ -47,7 +48,7 @@ typedef struct s_sets
 	pthread_t	th_live_cntrl;
 	sem_t		*forks_sem;
 	// sem_t		*print_sem;
-	// sem_t		*death_sem;
+	sem_t		*death_or_ate_sem;
 	// sem_t		*death_flag_sem;
 	t_philo		*philos;
 }t_sets;
@@ -76,7 +77,7 @@ int		start_meal_count_thread(t_sets *set);
 long	get_time_now();
 void	smart_sleep(unsigned long time_to_sleep);
 void	print(t_philo *philo, char *str);
-void	print_die(t_philo *philo, sem_t *sem);
+void	print_die(t_philo *philo);
 int		are_you_already_dead(t_sets *set);
 
 

@@ -56,8 +56,7 @@ void	philo_life(t_philo *philo)
 		// sem_post(philo->ph_access_sem);	
 		if (total_eating != -1 && ph_cnt_eating >= total_eating)
 		{			
-			// sem_post(philo->eat_cnt_sem);
-			return ;
+			sem_post(philo->eat_cnt_sem);
 		}
 		if (are_you_already_dead(philo->set))
 			return ;
@@ -98,14 +97,17 @@ int	create_processes(t_sets *set)
 		}
 		//usleep(100);
 	}
-	int status;
 
-	//В случае успешного выполнения wait() возвращает ID процесса завершившегося потомка
-	while (waitpid(-1, &status, 0) > 0)
-	{
-		if (WEXITSTATUS(status) == 1)
-			return (kill_processes(set));
-	}
+	start_meal_count_thread(set);
+	
+	// //В случае успешного выполнения wait() возвращает ID процесса завершившегося потомка
+	// int status;
+	// while (waitpid(-1, &status, 0) > 0)
+	// {
+	// 	if (WEXITSTATUS(status) == 1)
+	// 		return (kill_processes(set));
+	// }
+	
 	return (0);
 }
 
@@ -115,12 +117,12 @@ int	main(int argc, char **argv)
 
 	if (check_args(argc, argv))
 		return (1);
-	if (init(argv, &set) || create_processes(&set) || start_meal_count_thread(&set))
+	if (init(argv, &set) || create_processes(&set))
 		return (error_msg("error: fatal!\n") && make_free_and_destroy(&set));
+
+	sem_wait(set.death_or_ate_sem);// sem_post в потоке еды и в потоке смерти
 	
-	// sem_wait(set.death_sem);// sem_post в потоке еды и в потоке смерти
-	
-	//kill_processes(&set);
+	kill_processes(&set);
 	make_free_and_destroy(&set);
 	return (0);
 }
