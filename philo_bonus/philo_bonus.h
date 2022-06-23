@@ -31,7 +31,7 @@ typedef struct s_philo
 	int				num;
 	long			last_eating;
 	long			ph_cnt_eating;
-	// sem_t			*ph_access_sem;
+	sem_t			*ph_access_sem;
 	sem_t			*eat_cnt_sem;
 }t_philo;
 

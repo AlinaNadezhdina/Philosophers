@@ -22,8 +22,8 @@ int	make_free_and_destroy(t_sets *set)
 	printf("sem_wait(set->death_sem)  make_free_and_destroy\n");
 	while (i < set->ph_count)
 	{	
-		// sem_close(philos[i].ph_access_sem);
-		// sem_close(philos[i].eat_cnt_sem);
+		sem_close(philos[i].ph_access_sem);
+		sem_close(philos[i].eat_cnt_sem);
 		i++;
 	}
 	sem_unlink("forks");
@@ -32,7 +32,7 @@ int	make_free_and_destroy(t_sets *set)
 	sem_unlink("flag_death");
 	sem_close(set->forks_sem);
 	// sem_close(set->death_flag_sem);
-	// sem_close(set->death_sem);
+	sem_close(set->death_or_ate_sem);
 	// sem_close(set->print_sem);
 	free(philos);
 	return (0);

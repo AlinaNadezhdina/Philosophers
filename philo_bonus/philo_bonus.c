@@ -26,14 +26,18 @@ void	philo_eat(t_philo * philo)
 	}
 	sem_wait(set->forks_sem);
 	print(philo, "has taken a fork");
-	// sem_wait(philo->ph_access_sem);
+
+	sem_wait(philo->ph_access_sem);
 	philo->last_eating = get_time_now();
-	// sem_post(philo->ph_access_sem);
+	sem_post(philo->ph_access_sem);
+
 	print(philo, "is eating");
 	smart_sleep(set->time_to_eat);
-	// sem_wait(philo->ph_access_sem);
+
+	sem_wait(philo->ph_access_sem);
 	philo->ph_cnt_eating++;
-	// sem_post(philo->ph_access_sem);
+	sem_post(philo->ph_access_sem);
+	
 	sem_post(set->forks_sem);
 	sem_post(set->forks_sem);
 }

@@ -25,8 +25,9 @@ void	*food_monitor(void *set_arg)
 		sem_wait(set->philos[i].eat_cnt_sem);
 		i++;
 	}
-	sem_post(set->death_or_ate_sem);
 	printf("ALL ATE\n");
+
+	sem_post(set->death_or_ate_sem);
 	return (NULL);
 }
 
@@ -36,9 +37,11 @@ int	check_die(t_philo *philo)
 	long	time;
 
 	time = get_time_now();
-	// sem_wait(philo->ph_access_sem);
+
+	sem_wait(philo->ph_access_sem);
 	last_eat_time = philo->last_eating;
-	// sem_post(philo->ph_access_sem);
+	sem_post(philo->ph_access_sem);
+
 	if (time - last_eat_time > philo->set->time_to_die)
 		return (1);
 	return (0);
@@ -70,6 +73,7 @@ void	*death_monitor(void *param)
 			sem_post(set->death_or_ate_sem);
 			return (NULL);
 		}
+		usleep(1000);
 	}
 	return (NULL);
 }
@@ -80,11 +84,9 @@ int	start_meal_count_thread(t_sets *set)
 
 	if (set->cnt_eatings != -1)
 	{
-		int food_count_result = pthread_create(&meal_thread, NULL, food_monitor, set);
-		printf("FOOD COUNT THREAD RESULT %d\n", food_count_result);
-		if (food_count_result != 0)
+		if (pthread_create(&meal_thread, NULL, food_monitor, set) != 0)
 			return (1);
-		// pthread_detach(meal_thread);
+		pthread_detach(meal_thread);
 	}
 	return (0);
 }
