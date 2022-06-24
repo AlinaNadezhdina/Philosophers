@@ -47,17 +47,20 @@ int	init_semaphores(t_sets *set)
 		"queue19",
 		"queue20",
 	};
+
 	set->queue_sems = malloc(sizeof(sem_t*) * set->ph_count);
+
 	for (int i = 0; i < set->ph_count; i++)
 	{
 		sem_unlink(sem_names[i]); // also close when ending the program
 		sem_t *queue_sem = sem_open(sem_names[i], O_CREAT, 0644, i % 2);
-		printf("%d\n", i%2);
 		set->queue_sems[i] = queue_sem;
 	}
 	
 	// set->print_sem = open_semaphore("print", 1);
 	set->death_or_ate_sem = open_semaphore("/death",  0);// семафор выставляется в 1 если кто-то умер
+	set->shutdown_signal = sem_open("/shutdown", O_CREAT, 0644, 0);
+
 	// set->death_flag_sem = open_semaphore("flag_death", 1);//семафор для флага смерти между 2 потоками процесса филлософа
 	// if (set->forks_sem < 0 || set->print_sem < 0 
 			// || set->death_sem < 0 || set->death_flag_sem < 0)

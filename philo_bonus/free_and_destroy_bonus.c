@@ -27,7 +27,7 @@ int	make_free_and_destroy(t_sets *set)
 		sem_unlink("ph_access_sem");
 		printf("IN LOOP ACCESS\n");
 
-		// sem_close(philos[i].eat_cnt_sem);
+		//sem_close(philos[i].eat_cnt_sem);
 		sem_unlink("eat_cnt_sem");
 		printf("IN LOOP EAT COUNT\n");
 

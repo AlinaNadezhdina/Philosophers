@@ -84,14 +84,27 @@ void	philo_life(t_philo *philo)
 	return ;
 }
 
+void *wait_for_shutdown(void *param) {
+	t_philo	*philo;
+	philo = param;
+	sem_wait(philo->set->shutdown_signal);
+	philo->set->flag_death = 1;
+
+	return 0;
+}
+
 int	start_philo_life_process(t_philo *philo)
 {
 	philo->last_eating = get_time_now();
 	if (pthread_create(&(philo->set->th_live_cntrl), NULL, death_monitor, philo) != 0)
 		return (1);
-	philo_life(philo);
-	//pthread_join(philo->set->th_live_cntrl, NULL);
+	if (pthread_create(&(philo->set->shutdown_wait), NULL, wait_for_shutdown, philo) != 0)
+		return (1);
+
 	pthread_detach(philo->set->th_live_cntrl);
+	pthread_detach(philo->set->shutdown_wait);
+
+	philo_life(philo);
 	return (0);
 }
 
@@ -138,8 +151,13 @@ int	main(int argc, char **argv)
 		return (error_msg("error: fatal!\n") && make_free_and_destroy(&set));
 
 	printf("WAITING FOR DEATH_OR_ATE_SEM NOW\n");
+
 	sem_wait(set.death_or_ate_sem);// sem_post в потоке еды и в потоке смерти
-	
+
+	for(int i = 0; i < set.ph_count; i++) {
+		sem_post(set.shutdown_signal);
+	}
+
 	int status;
 
 	//В случае успешного выполнения wait() возвращает ID процесса завершившегося потомка

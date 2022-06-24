@@ -33,6 +33,7 @@ typedef struct s_philo
 	long			ph_cnt_eating;
 	sem_t			*ph_access_sem;
 	sem_t			*eat_cnt_sem;
+
 }t_philo;
 
 typedef struct s_sets
@@ -46,8 +47,11 @@ typedef struct s_sets
 	long 		time_to_sleep;
 	long 		cnt_eatings;
 	pthread_t	th_live_cntrl;
+	pthread_t	shutdown_wait;
 	sem_t		*forks_sem;
 	sem_t		**queue_sems;
+	sem_t		*shutdown_signal;
+
 	// sem_t		*print_sem;
 	sem_t		*death_or_ate_sem;
 	// sem_t		*death_flag_sem;
