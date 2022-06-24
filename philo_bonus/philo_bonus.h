@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:02:07 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/24 14:33:51 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/24 18:11:38 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct s_sets
 	pthread_t	shutdown_wait;
 	sem_t		*forks_sem;
 	sem_t		**queue_sems;
-	sem_t		*shutdown_signal;
+	sem_t		*shutdown_signal_sem;
 
 	sem_t		*print_sem;
 	sem_t		*death_or_ate_sem;
@@ -61,6 +61,10 @@ typedef struct s_sets
 
 //================ft_atoi_bonus.c================//
 int		ft_atoi(const char *str);
+
+//================from_libft.c==================//
+char	*ft_itoa(int n);
+char	*ft_strjoin(char const *s1, char const *s2);
 
 //===============detect_errors_bonus.c============//
 int		is_negative_args(int count, char **arg);
@@ -75,18 +79,20 @@ int		check_args(int argc, char **argv);
 
 //===============food_life_monitor_bonus.c============//
 void	*death_monitor(void *param);
-void	*food_monitor(void *ph_param);
+void	*food_monitor(void *param);
 int		start_meal_count_thread(t_sets *set);
+void	*wait_for_shutdown(void *param);
 
 //=================utils_bonus.c===============//
 long	get_time_now();
-void	smart_sleep(unsigned long time_to_sleep);
 void	print(t_philo *philo, char *str);
 void	print_die(t_philo *philo);
 int		are_you_already_dead(t_sets *set);
+void	set_flag_death_value(t_sets *set);
 
 
 //==================free_and_destroy.c=======//
 int		make_free_and_destroy(t_sets *set);
 int		kill_processes(t_sets *set);
+char	*make_semaphore_name(int num);
 #endif

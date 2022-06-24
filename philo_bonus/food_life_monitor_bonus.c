@@ -6,27 +6,24 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/15 17:02:26 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/24 14:33:25 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/24 16:48:08 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	*food_monitor(void *set_arg)
+void	*food_monitor(void *param)
 {
 	t_sets	*set;
 	int		i;
 	
-	set = set_arg;
+	set = param;
 	i = 0;
-
 	while (i < set->ph_count)
 	{
 		sem_wait(set->philos[i].eat_cnt_sem);
 		i++;
 	}
-	printf("ALL ATE\n");
-
 	sem_post(set->death_or_ate_sem);
 	return (NULL);
 }
@@ -37,9 +34,7 @@ int	check_die(t_philo *philo)
 	long	time;
 
 	time = get_time_now();
-
 	sem_wait(philo->ph_access_sem);
-	usleep(1000);
 	last_eat_time = philo->last_eating;
 	sem_post(philo->ph_access_sem);
 
@@ -60,18 +55,16 @@ void	*death_monitor(void *param)
 
 	while (1)
 	{
-		if(set->flag_death) { 
+		//когда фил поел сколько нужно и не умер, чтобы выйти из своего осн. потока жизни 
+		//флаг death_flag_sem должен быть равен = 1, его выставляет поток-ждун фила wait_for_shutdown
+		if(are_you_already_dead(set)) { 
 			return (NULL);
 		}
 		if (check_die(philo))
 		{
-			printf("HERE!!!\n");
 			print_die(philo);
-
-			// sem_wait(flag_sem);
-			set->flag_death = 1;
-			// sem_post(flag_sem);
-			
+			set_flag_death_value(set);
+					
 			sem_post(set->death_or_ate_sem);
 			return (NULL);
 		}
@@ -90,4 +83,14 @@ int	start_meal_count_thread(t_sets *set)
 		pthread_detach(meal_thread);
 	}
 	return (0);
+}
+
+void	*wait_for_shutdown(void *param)
+{
+	t_philo	*philo;
+	
+	philo = param;
+	sem_wait(philo->set->shutdown_signal_sem);
+	set_flag_death_value(philo->set);
+	return 0;
 }

@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:23:30 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/24 14:34:03 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/24 17:58:16 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,6 @@ long	get_time_now()
 
 	gettimeofday(&time, NULL);
 	return (long)(time.tv_sec * 1000 + time.tv_usec / 1000);
-}
-
-void	smart_sleep(unsigned long time_to_sleep)
-{
-	usleep(time_to_sleep * 1000);
-
-	// unsigned long start;
-	
-	// start = get_time_now();
-	// while(get_time_now() - start <= time_to_sleep)
-	// 	usleep(1);
 }
 
 void	print(t_philo *philo, char *str)
@@ -61,4 +50,11 @@ int	are_you_already_dead(t_sets *set)
 	death = set->flag_death;
 	sem_post(set->death_flag_sem);
 	return (death);
+}
+
+void	set_flag_death_value(t_sets *set)
+{
+	sem_wait(set->death_flag_sem);
+	set->flag_death = 1;
+	sem_post(set->death_flag_sem);
 }

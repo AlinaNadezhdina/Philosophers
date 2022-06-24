@@ -6,7 +6,8 @@ SRCS			=	philo_bonus.c\
 					init_bonus.c\
 					food_life_monitor_bonus.c\
 					free_and_destroy_bonus.c\
-					utils_bonus.c
+					utils_bonus.c\
+					from_libft_bonus.c
 
 SRCS_DIR		=	philo_bonus
 
@@ -22,7 +23,7 @@ CC				=	gcc
 
 RM				=	rm -f
 
-CFLAGS			=	-Wextra -Werror -Wall #-fsanitize=address -g
+CFLAGS			=	-Wextra -Werror -Wall -fsanitize=address -g
 
 .PHONY			:	all clean fclean re
 

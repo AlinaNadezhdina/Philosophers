@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:06:38 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/24 13:31:04 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/24 18:13:41 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	philo_eat(t_philo * philo)
 
 	set = philo->set;
 
-	current_index = philo->num-1;
-	printf("- %d entered the queue\n", philo->num);
+	current_index = philo->num - 1;
+//	printf("- %d entered the queue\n", philo->num);
 	sem_wait(set->queue_sems[current_index]); // queue lock
 
 	sem_wait(set->forks_sem);
@@ -40,7 +40,7 @@ void	philo_eat(t_philo * philo)
 	sem_post(philo->ph_access_sem);
 
 	print(philo, "is eating");
-	smart_sleep(set->time_to_eat);
+	usleep(set->time_to_eat * 1000);
 
 	sem_wait(philo->ph_access_sem);
 	philo->ph_cnt_eating++;
@@ -51,7 +51,7 @@ void	philo_eat(t_philo * philo)
 
 	passed_index = (current_index + 1) % set->ph_count;
 	sem_post(set->queue_sems[passed_index]); // pass queue to the next philosopher
-	printf("- %d passed the queue to %d\n", philo->num, passed_index + 1);
+//	printf("- %d passed the queue to %d\n", philo->num, passed_index + 1);
 }
 
 void	philo_life(t_philo *philo)
@@ -59,39 +59,46 @@ void	philo_life(t_philo *philo)
 	t_sets	*set;
 	long	ph_cnt_eating;
 	long	total_eating;
+	int		already_post_flag;
+
+	already_post_flag = 0;
 
 	set = philo->set;
 	while (1)
 	{
-		print(philo, "before checking if dead");
 		if(are_you_already_dead(set))
+		{
+			//флаг нужен в случае, когда фил умер, не доев нужное количество, 
+			//а семафор фила eat_cnt_sem в потоке food_monitor так и продолжает ждать когда фил сделает sem_post(philo->eat_cnt_sem)
+			if (already_post_flag == 0)
+				sem_post(philo->eat_cnt_sem);
 			return ;
+		}
+			
 		philo_eat(philo);
 		total_eating = philo->set->cnt_eatings;
-		// sem_wait(philo->ph_access_sem);
+		sem_wait(philo->ph_access_sem);
 		ph_cnt_eating = philo->ph_cnt_eating;
-		// sem_post(philo->ph_access_sem);	
-		if (total_eating != -1 && ph_cnt_eating >= total_eating)
+		sem_post(philo->ph_access_sem);	
+		if (total_eating != -1 && ph_cnt_eating >= total_eating  && already_post_flag == 0)
 		{			
 			sem_post(philo->eat_cnt_sem);
+			already_post_flag = 1;
 		}
 		if (are_you_already_dead(philo->set))
+		{
+			if (already_post_flag == 0)
+				sem_post(philo->eat_cnt_sem);
 			return ;
+		}
 		print(philo, "is sleeping");
-		smart_sleep(philo->set->time_to_sleep);
+		usleep(philo->set->time_to_sleep * 1000);
 		print(philo, "is thinking");
 	}
 	return ;
 }
 
-void *wait_for_shutdown(void *param) {
-	t_philo	*philo;
-	philo = param;
-	sem_wait(philo->set->shutdown_signal);
-	philo->set->flag_death = 1;
 
-	return 0;
-}
 
 int	start_philo_life_process(t_philo *philo)
 {
@@ -125,48 +132,32 @@ int	create_processes(t_sets *set)
 			start_philo_life_process(&philos[i]);			
 			exit(0);
 		}
-		//usleep(100);
 	}
-
 	start_meal_count_thread(set);
-	
-	// //В случае успешного выполнения wait() возвращает ID процесса завершившегося потомка
-	// int status;
-	// while (waitpid(-1, &status, 0) > 0)
-	// {
-	// 	if (WEXITSTATUS(status) == 1)
-	// 		return (kill_processes(set));
-	// }
-	
 	return (0);
 }
 
 int	main(int argc, char **argv)
 {
-	t_sets		set;
+	t_sets	set;
+	int		status;
 
 	if (check_args(argc, argv))
 		return (1);
 	if (init(argv, &set) || create_processes(&set))
 		return (error_msg("error: fatal!\n") && make_free_and_destroy(&set));
-
-	printf("WAITING FOR DEATH_OR_ATE_SEM NOW\n");
-
 	sem_wait(set.death_or_ate_sem);// sem_post в потоке еды и в потоке смерти
-
 	for(int i = 0; i < set.ph_count; i++) {
-		sem_post(set.shutdown_signal);
+		sem_post(set.shutdown_signal_sem);//открываем семафор, который ждет поток каждого фила,
+									  //чтобы выставить флаг смерти в 1 и завершить потоки жизни и смерти
 	}
-
-	int status;
-
 	//В случае успешного выполнения wait() возвращает ID процесса завершившегося потомка
 	while (waitpid(-1, &status, 0) > 0)
 	{
-		// if (WEXITSTATUS(status) == 1)
-		// 	return (kill_processes(&set));
+		 if (WEXITSTATUS(status))//WEXITSTATUS возвращает код завершения потомка 
+		 								//возвращает истинное значение, если потомок нормально завершился
+		 	return (kill_processes(&set));
 	}
-	// kill_processes(&set);
 	make_free_and_destroy(&set);
 	return (0);
 }
