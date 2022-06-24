@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/15 17:02:26 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/24 13:27:36 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/24 14:33:25 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	*food_monitor(void *set_arg)
 	}
 	printf("ALL ATE\n");
 
-	set->flag_death = 1;
 	sem_post(set->death_or_ate_sem);
 	return (NULL);
 }
@@ -59,10 +58,11 @@ void	*death_monitor(void *param)
 	set = philo->set;
 	time = get_time_now();
 
-	// sem_t *flag_sem = sem_open("flag_death", 0);
-
 	while (1)
 	{
+		if(set->flag_death) { 
+			return (NULL);
+		}
 		if (check_die(philo))
 		{
 			printf("HERE!!!\n");

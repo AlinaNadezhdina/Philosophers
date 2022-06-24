@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/15 18:23:06 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/24 13:21:40 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/24 14:35:21 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ int	make_free_and_destroy(t_sets *set)
 	sem_unlink("death");
 	sem_unlink("flag_death");
 	sem_close(set->forks_sem);
-	// sem_close(set->death_flag_sem);
+	sem_close(set->death_flag_sem);
 	sem_close(set->death_or_ate_sem);
-	// sem_close(set->print_sem);
+	sem_close(set->print_sem);
 	printf("AFTER CLOSE\n");
 
 	free(set->philos);

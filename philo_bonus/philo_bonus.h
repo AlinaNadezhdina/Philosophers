@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:02:07 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/24 13:16:44 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/24 14:33:51 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ typedef struct s_sets
 	sem_t		**queue_sems;
 	sem_t		*shutdown_signal;
 
-	// sem_t		*print_sem;
+	sem_t		*print_sem;
 	sem_t		*death_or_ate_sem;
-	// sem_t		*death_flag_sem;
+	sem_t		*death_flag_sem;
 	t_philo		*philos;
 }t_sets;
 

@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 12:17:36 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/24 13:20:15 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/24 14:35:06 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,14 +57,14 @@ int	init_semaphores(t_sets *set)
 		set->queue_sems[i] = queue_sem;
 	}
 	
-	// set->print_sem = open_semaphore("print", 1);
+	set->print_sem = open_semaphore("print", 1);
 	set->death_or_ate_sem = open_semaphore("/death",  0);// семафор выставляется в 1 если кто-то умер
 	set->shutdown_signal = sem_open("/shutdown", O_CREAT, 0644, 0);
 
-	// set->death_flag_sem = open_semaphore("flag_death", 1);//семафор для флага смерти между 2 потоками процесса филлософа
-	// if (set->forks_sem < 0 || set->print_sem < 0 
-			// || set->death_sem < 0 || set->death_flag_sem < 0)
-		// return (1);
+	set->death_flag_sem = open_semaphore("flag_death", 1);//семафор для флага смерти между 2 потоками процесса филлософа
+	if (set->forks_sem < 0 || set->print_sem < 0 
+			|| set->death_or_ate_sem < 0 || set->death_flag_sem < 0)
+		return (1);
 	return (0);
 }
 

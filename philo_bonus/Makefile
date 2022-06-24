@@ -22,7 +22,7 @@ CC				=	gcc
 
 RM				=	rm -f
 
-CFLAGS			=	-Wextra -Werror -Wall -fsanitize=address -g
+CFLAGS			=	-Wextra -Werror -Wall #-fsanitize=address -g
 
 .PHONY			:	all clean fclean re
 
