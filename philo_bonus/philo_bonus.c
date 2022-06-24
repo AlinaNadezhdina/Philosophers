@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:06:38 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/22 14:19:44 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/24 13:31:04 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,9 +137,18 @@ int	main(int argc, char **argv)
 	if (init(argv, &set) || create_processes(&set))
 		return (error_msg("error: fatal!\n") && make_free_and_destroy(&set));
 
+	printf("WAITING FOR DEATH_OR_ATE_SEM NOW\n");
 	sem_wait(set.death_or_ate_sem);// sem_post в потоке еды и в потоке смерти
 	
-	kill_processes(&set);
+	int status;
+
+	//В случае успешного выполнения wait() возвращает ID процесса завершившегося потомка
+	while (waitpid(-1, &status, 0) > 0)
+	{
+		// if (WEXITSTATUS(status) == 1)
+		// 	return (kill_processes(&set));
+	}
+	// kill_processes(&set);
 	make_free_and_destroy(&set);
 	return (0);
 }

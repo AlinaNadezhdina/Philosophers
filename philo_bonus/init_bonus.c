@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 12:17:36 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/21 23:48:57 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/24 13:20:15 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	init_semaphores(t_sets *set)
 		"queue19",
 		"queue20",
 	};
-	set->queue_sems = malloc(sizeof(sem_t));
+	set->queue_sems = malloc(sizeof(sem_t*) * set->ph_count);
 	for (int i = 0; i < set->ph_count; i++)
 	{
 		sem_unlink(sem_names[i]); // also close when ending the program
@@ -77,7 +77,7 @@ int	init_philos(t_sets *set)
 		set->philos[i].ph_access_sem = open_semaphore("ph_access_sem", 1);
 		if (set->philos[i].ph_access_sem < 0)
 			return (1);
-		set->philos[i].eat_cnt_sem = open_semaphore("/eat_cnt_sem", 0);
+		set->philos[i].eat_cnt_sem = open_semaphore("eat_cnt_sem", 0);
 		if (set->philos[i].eat_cnt_sem < 0)
 			return (1);
 		set->philos[i].ph_cnt_eating = 0;

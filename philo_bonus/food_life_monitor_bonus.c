@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/15 17:02:26 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/22 13:38:06 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/24 13:27:36 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	*food_monitor(void *set_arg)
 	}
 	printf("ALL ATE\n");
 
+	set->flag_death = 1;
 	sem_post(set->death_or_ate_sem);
 	return (NULL);
 }
