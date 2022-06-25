@@ -46,12 +46,10 @@ int	check_die(t_philo *philo)
 void	*death_monitor(void *param)
 {
 	t_philo	*philo;
-	long	time;
 	t_sets	*set;
 
 	philo = param;
 	set = philo->set;
-	time = get_time_now();
 
 	while (1)
 	{
@@ -68,6 +66,7 @@ void	*death_monitor(void *param)
 			sem_post(set->death_or_ate_sem);
 			return (NULL);
 		}
+		usleep(2000);
 	}
 	return (NULL);
 }

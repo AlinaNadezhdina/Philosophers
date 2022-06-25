@@ -21,9 +21,7 @@ void	philo_eat(t_philo * philo)
 	set = philo->set;
 
 	current_index = philo->num - 1;
-//	printf("- %d entered the queue\n", philo->num);
 	sem_wait(set->queue_sems[current_index]); // queue lock
-
 	sem_wait(set->forks_sem);
 	print(philo, "has taken a fork");
 	if (set->ph_count == 1)
@@ -51,7 +49,6 @@ void	philo_eat(t_philo * philo)
 
 	passed_index = (current_index + 1) % set->ph_count;
 	sem_post(set->queue_sems[passed_index]); // pass queue to the next philosopher
-//	printf("- %d passed the queue to %d\n", philo->num, passed_index + 1);
 }
 
 void	philo_life(t_philo *philo)
@@ -117,11 +114,13 @@ int	start_philo_life_process(t_philo *philo)
 
 int	create_processes(t_sets *set)
 {
+	sem_t *launch_sem;
 	int		i;
 	t_philo *philos;
 
 	philos = set->philos;
 	i = -1;	
+	launch_sem = sem_open("/launch", O_CREAT, 0644, 0);
 	while(++i < set->ph_count)
 	{	
 		philos[i].pid = fork();		
@@ -129,11 +128,19 @@ int	create_processes(t_sets *set)
 			return (error_msg("fork creation error"));
 		if (philos[i].pid == 0)
 		{
+			sem_wait(launch_sem);
 			start_philo_life_process(&philos[i]);			
 			exit(0);
 		}
 	}
 	start_meal_count_thread(set);
+	for (int i = 0; i < set->ph_count; i++)
+	{
+		sem_post(launch_sem);
+	}
+	sem_close(launch_sem);
+	sem_unlink("/launch");
+	
 	return (0);
 }
 
