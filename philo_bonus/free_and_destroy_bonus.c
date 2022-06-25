@@ -53,6 +53,7 @@ int	make_free_and_destroy(t_sets *set)
 	sem_close(set->print_sem);
 	//printf("AFTER CLOSE\n");
 
+	free(set->queue_sems);
 	free(set->philos);
 	//printf("AFTER FREE\n");
 
