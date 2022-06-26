@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 12:17:36 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/24 18:28:09 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/25 23:16:24 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,26 +23,29 @@ sem_t	*open_semaphore(char *name, int val)
 
 int	init_semaphores(t_sets *set)
 {
-	char *sem_name;
+	char	*sem_name;
+	int		i;
 
+	i = 0;
 	set->forks_sem = open_semaphore("/forks", set->ph_count);
-	set->queue_sems = malloc(sizeof(sem_t*) * set->ph_count);
-	for (int i = 0; i < set->ph_count; i++)
+	set->queue_sems = malloc(sizeof(sem_t *) * set->ph_count);
+	while (i < set->ph_count)
 	{
 		sem_name = make_semaphore_name(i);
-		sem_unlink(sem_name); // also close when ending the program
-		sem_t *queue_sem = sem_open(sem_name, O_CREAT, 0644, i % 2);
+		set->queue_sems[i] = open_semaphore(sem_name, i % 2);
 		free(sem_name);
-		if (queue_sem < 0)
+		if (set->queue_sems[i] < 0)
 			return (1);
-		set->queue_sems[i] = queue_sem;
+		i++;
 	}
 	set->print_sem = open_semaphore("/print", 1);
-	set->death_or_ate_sem = open_semaphore("/death_or_ate_sem",  0);// семафор выставляется в 1 если кто-то умер
+	set->death_or_ate_sem = open_semaphore("/death_or_ate_sem", 0);
 	set->shutdown_signal_sem = open_semaphore("/shutdown_sem", 0);
-	set->death_flag_sem = open_semaphore("/flag_death", 1);//семафор для флага смерти между 3 потоками процесса филлософа
-	if (set->forks_sem < 0 || set->print_sem < 0 || set->death_or_ate_sem < 0 
-			|| set->death_flag_sem < 0 || set->shutdown_signal_sem < 0)
+	set->death_flag_sem = open_semaphore("/flag_death", 1);
+	set->launch_sem = open_semaphore("/launch", 0);
+	if (set->forks_sem < 0 || set->print_sem < 0 || set->death_or_ate_sem < 0
+		|| set->death_flag_sem < 0 || set->shutdown_signal_sem < 0
+		|| set->launch_sem < 0)
 		return (1);
 	return (0);
 }
@@ -55,7 +58,6 @@ int	init_philos(t_sets *set)
 	while (i < set->ph_count)
 	{
 		set->philos[i].num = i + 1;
-
 		set->philos[i].ph_access_sem = open_semaphore("/ph_access_sem", 1);
 		if (set->philos[i].ph_access_sem < 0)
 			return (1);
@@ -70,19 +72,20 @@ int	init_philos(t_sets *set)
 	return (0);
 }
 
-int init(char **argv, t_sets *set)
+int	init(char **argv, t_sets *set)
 {	
 	set->flag_death = 0;
 	set->start_time = get_time_now();
 	set->ph_count = ft_atoi(argv[1]);
 	set->time_to_die = ft_atoi(argv[2]);
-	set->time_to_eat  = ft_atoi(argv[3]);
-	set->time_to_sleep  = ft_atoi(argv[4]);
-	if(argv[5])
-		set->cnt_eatings  = ft_atoi(argv[5]);
+	set->time_to_eat = ft_atoi(argv[3]);
+	set->time_to_sleep = ft_atoi(argv[4]);
+	if (argv[5])
+		set->cnt_eatings = ft_atoi(argv[5]);
 	else
-		set->cnt_eatings  = -1;
-	if (set->time_to_die == 0 || set->time_to_eat == 0 || set->time_to_sleep == 0)
+		set->cnt_eatings = -1;
+	if (set->time_to_die == 0 || set->time_to_eat == 0
+		|| set->time_to_sleep == 0)
 		return (error_msg("error: wrong arguments value"));
 	set->philos = malloc(sizeof(t_philo) * set->ph_count);
 	if (!set->philos)
@@ -100,4 +103,3 @@ int	check_args(int argc, char **argv)
 		return (error_msg("error: some argument isn't a positive int!"));
 	return (0);
 }
-

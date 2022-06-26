@@ -6,22 +6,22 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:02:07 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/24 18:11:38 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/25 23:38:02 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 
 # include <pthread.h>
 # include <stdio.h>
 # include <unistd.h>
 # include <sys/time.h>
 # include <stdlib.h>
-#include  <semaphore.h>
-#include  <signal.h>
+# include <semaphore.h>
+# include <signal.h>
 
-struct s_sets;
+struct	s_sets;
 
 typedef struct s_philo
 {
@@ -44,20 +44,19 @@ typedef struct s_sets
 	long		start_time;
 	long		time_to_die;
 	long		time_to_eat;
-	long 		time_to_sleep;
-	long 		cnt_eatings;
+	long		time_to_sleep;
+	long		cnt_eatings;
 	pthread_t	th_live_cntrl;
 	pthread_t	shutdown_wait;
 	sem_t		*forks_sem;
 	sem_t		**queue_sems;
 	sem_t		*shutdown_signal_sem;
-
+	sem_t		*launch_sem;
 	sem_t		*print_sem;
 	sem_t		*death_or_ate_sem;
 	sem_t		*death_flag_sem;
 	t_philo		*philos;
 }t_sets;
-
 
 //================ft_atoi_bonus.c================//
 int		ft_atoi(const char *str);
@@ -74,25 +73,30 @@ int		error_msg(char *str);
 int		parse_args(char **argv, t_sets	*set);
 
 //==============init_bonus.c================//
-int 	init(char **argv, t_sets *set);
+int		init(char **argv, t_sets *set);
 int		check_args(int argc, char **argv);
+sem_t	*open_semaphore(char *name, int val);
 
-//===============food_life_monitor_bonus.c============//
+//===============food_death_monitor_bonus.c============//
 void	*death_monitor(void *param);
 void	*food_monitor(void *param);
 int		start_meal_count_thread(t_sets *set);
 void	*wait_for_shutdown(void *param);
 
 //=================utils_bonus.c===============//
-long	get_time_now();
+long	get_time_now(void);
 void	print(t_philo *philo, char *str);
 void	print_die(t_philo *philo);
 int		are_you_already_dead(t_sets *set);
 void	set_flag_death_value(t_sets *set);
 
+//=================utils_bonus2.c===============//
+char	*make_semaphore_name(int num);
+int		single_philo_must_die(t_philo *philo);
+int		not_count_food_if_ph_died(t_philo *philo, int already_post_flag);
 
 //==================free_and_destroy.c=======//
 int		make_free_and_destroy(t_sets *set);
 int		kill_processes(t_sets *set);
-char	*make_semaphore_name(int num);
+
 #endif

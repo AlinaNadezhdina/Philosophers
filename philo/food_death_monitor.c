@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_life.c                                       :+:      :+:    :+:   */
+/*   food_death_monitor.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:44:40 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/15 13:54:36 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/23 17:05:43 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,15 +61,16 @@ void	set_death_flag(t_sets *set)
 	pthread_mutex_unlock(&(set->flag_deth_mutex));
 }
 
-void	*check_live(void *param)
+void	*food_death_monitor(void *param)
 {
-	t_sets *set = param;
-	int	i;
+	t_sets	*set;
+	int		i;
 
+	set = param;
 	while (1)
 	{
 		i = 0;
-		while	(i < set->ph_count)
+		while (i < set->ph_count)
 		{
 			if (check_die(&(set->philos[i])))
 			{

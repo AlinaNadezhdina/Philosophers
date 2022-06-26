@@ -6,18 +6,18 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:23:30 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/24 17:58:16 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/26 14:42:10 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-long	get_time_now()
+long	get_time_now(void)
 {
-	struct timeval time;
+	struct timeval	time;
 
 	gettimeofday(&time, NULL);
-	return (long)(time.tv_sec * 1000 + time.tv_usec / 1000);
+	return ((long)(time.tv_sec * 1000 + time.tv_usec / 1000));
 }
 
 void	print(t_philo *philo, char *str)
@@ -38,13 +38,13 @@ void	print_die(t_philo *philo)
 
 	time = get_time_now();
 	sem_wait(philo->set->print_sem);
-	printf("\033[31m%ld %d died \033[37m\n",  time - philo->set->start_time, philo->num);
-	sem_post(philo->set->print_sem);
+	printf("|\033[31m%ld|\t\t %d died \033[37m\n",
+		time - philo->set->start_time, philo->num);
 }
 
 int	are_you_already_dead(t_sets *set)
 {
-	int death;
+	int	death;
 
 	sem_wait(set->death_flag_sem);
 	death = set->flag_death;

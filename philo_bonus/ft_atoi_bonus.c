@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 12:11:29 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/24 18:10:52 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/25 21:17:56 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,3 @@ int	ft_atoi(const char *str)
 	}
 	return (number * sign);
 }
-
-

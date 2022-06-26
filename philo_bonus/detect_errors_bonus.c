@@ -12,12 +12,12 @@
 
 #include "philo_bonus.h"
 
-int	 is_negative_args(int count, char **arg)
+int	is_negative_args(int count, char **arg)
 {
 	int	i;
 
 	i = 0;
-	while(i < count)
+	while (i < count)
 	{
 		if (ft_atoi(arg[i]) <= 0)
 			return (1);
@@ -28,8 +28,10 @@ int	 is_negative_args(int count, char **arg)
 
 int	error_msg(char *str)
 {
-	int	i = 0;
-	while(str[i])
+	int	i;
+
+	i = 0;
+	while (str[i])
 	{
 		write(2, &str[i], 1);
 		i++;
