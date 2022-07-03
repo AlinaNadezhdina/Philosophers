@@ -6,7 +6,7 @@
 /*   By: wcollen <wcollen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:23:30 by wcollen           #+#    #+#             */
-/*   Updated: 2022/06/26 14:42:10 by wcollen          ###   ########.fr       */
+/*   Updated: 2022/06/28 17:29:49 by wcollen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ long	get_time_now(void)
 
 void	print(t_philo *philo, char *str)
 {
-	unsigned long	time;
+	long	time;
 
 	if (are_you_already_dead(philo->set))
 		return ;
@@ -34,7 +34,7 @@ void	print(t_philo *philo, char *str)
 
 void	print_die(t_philo *philo)
 {
-	unsigned long	time;
+	long	time;
 
 	time = get_time_now();
 	sem_wait(philo->set->print_sem);
